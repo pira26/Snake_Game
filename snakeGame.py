@@ -32,6 +32,8 @@ foodSpawn = True
 direction = 'RIGHT'
 changeTo  = direction
 
+score = 0
+
 #Game Over function
 def gameOver():
     myFont = pygame.font.SysFont("monaco", 72)
@@ -39,17 +41,21 @@ def gameOver():
     Gorect = GOsurf.get_rect()
     Gorect.midtop = (360, 15)
     playSurface.blit(GOsurf, Gorect)
+    showScore(0)
     pygame.display.flip()
     time.sleep(5)
     pygame.quit()
     sys.exit()
 
-def score():
+def showScore(choice = 1):
     sFont = pygame.font.SysFont("monaco", 24)
-    sSruf = sFont.render("Score: {0}".format(score), True, red)
-    srect = sSruf.get_rect()
-    srect.midtop = (360, 120)
-    playSurface.blit(ssurf, srect)
+    sSurf = sFont.render("Score: {0}".format(score), True, black)
+    sRect = sSurf.get_rect()
+    if choice == 1:
+        sRect.midtop = (80, 10)
+    else:
+        sRect.midtop = (360, 120)
+    playSurface.blit(sSurf, sRect)
 
 #Game logic
 while True:
@@ -58,17 +64,17 @@ while True:
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if event.key ==pygame.K_RIGHT or event.key == ord("d"):
+            if event.key == pygame.K_RIGHT or event.key == ord("d"):
                 #Look also after the ASCII value with ord()
                 changeTo = "RIGHT"
-            if event.key ==pygame.LEFT or event.key == ord("q"):
+            if event.key == pygame.K_LEFT or event.key == ord("q"):
                 changeTo = "LEFT"
-            if event.key ==pygame.K_UP or event.key == ord("z"):
+            if event.key == pygame.K_UP or event.key == ord("z"):
                 changeTo = "UP"
-            if event.key ==pygame.K_DOWN or event.key == ord("s"):
+            if event.key == pygame.K_DOWN or event.key == ord("s"):
                 changeTo = "DOWN"
             if event.key == pygame.K_ESCAPE:
-                pygame.event.post(pygame.event.Event(QUIT))
+                pygame.event.post(pygame.event.Event(pygame.QUIT))
 
     #Validation of direction
     if changeTo == "RIGHT" and not direction == "LEFT":
@@ -93,6 +99,7 @@ while True:
     #Snake body mechanism
     snakeBody.insert(0, list(snakePos))
     if snakePos[0] == foodPos[0] and snakePos[1] == foodPos[1]:
+        score += 1
         foodSpawn = False
     else:
         snakeBody.pop()
@@ -116,5 +123,6 @@ while True:
             if snakePos[0] == block[0] and snakePos[1] == block[1]:
                 gameOver
 
+    showScore()
     pygame.display.flip()
     fpsController.tick(25)
